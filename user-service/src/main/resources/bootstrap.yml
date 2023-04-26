@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    config:
+      uri: http://192.168.0.127:8888
+      name: config-server
+#      name: ecommerce #yml 이름 - 어플리케이션 이름
+
+#  profiles:
+#    active: dev

@@ -29,7 +29,12 @@ public class UserController {
     private final UserService userService;
     @GetMapping("/health_check")
     public String status(){
-        return String.format("user-service health check on Port %s", env.getProperty("local.server.port"));
+        return String.format("user-service health check"
+                + " port(local.server.port) = " + env.getProperty("local.server.port")
+                + " port(server.port) = " + env.getProperty("server.port")
+                + " token.secret = " + env.getProperty("token.secret")
+                + " token.expiration = " + env.getProperty("token.expiration_time")
+        );
     }
     @GetMapping("/greeting_check")
     public String welcome(){

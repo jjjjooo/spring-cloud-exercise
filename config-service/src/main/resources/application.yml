@@ -1,0 +1,28 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: file:///Users\fullb\Desktop\YML
+        git:
+          #uri: file:///Users\fullb\Desktop\YML
+          uri: https://github.com/jjjjooo/config
+          #username:
+          #password:
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
