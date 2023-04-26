@@ -1,2 +1,6 @@
 encrypt:
-  key: 1234567890asdfghjklzxcvbnm,. #대칭키
+#  key: 1234567890asdfghjklzxcvbnm,. #대칭키
+  key-store:
+    location: file:///${user.home}/Desktop/keystore/ozik.jks
+    password: ozikdoing
+    alias: ozik
