@@ -59,13 +59,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getUserDetailsByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if (userEntity == null) {
+            throw new UsernameNotFoundException("사용자가 없다");
+        }
+        UserDto user = new ModelMapper().map(userEntity, UserDto.class);
+        return  user;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByEmail(username);
 
         if (userEntity == null) {
             throw new UsernameNotFoundException("사용자가 없다");
         }
-        return new User(userEntity.getUserId(),
+        return new User(userEntity.getEmail(),
                 userEntity.getEncryptPwd(),
                 true,
                 true,
