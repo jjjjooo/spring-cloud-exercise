@@ -2,6 +2,8 @@ package com.example.orderservice.controller;
 
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.jpa.OrderEntity;
+import com.example.orderservice.message.KafkaProducer;
+import com.example.orderservice.message.OrderProducer;
 import com.example.orderservice.service.OrderService;
 import com.example.orderservice.vo.RequestOrder;
 import com.example.orderservice.vo.ResponseOrder;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,6 +26,8 @@ public class OrderController {
 
     private final Environment env;
     private final OrderService orderService;
+    private final KafkaProducer kafkaProducer;
+    private final OrderProducer orderProducer;
 
     @GetMapping("/health_check")
     public String status(){
@@ -35,15 +40,23 @@ public class OrderController {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         OrderDto orderDto = modelMapper.map(requestOrder, OrderDto.class);
-        orderDto.setUserId(userId);
-        OrderDto createOrder = orderService.createOrder(orderDto);
+        //jpa
+//        orderDto.setUserId(userId);
+//        OrderDto createOrder = orderService.createOrder(orderDto);
 
-        ResponseOrder responseOrder = modelMapper.map(createOrder, ResponseOrder.class);
+        //kafka
+        orderDto.setOrderId(UUID.randomUUID().toString());
+        orderDto.setTotalPrice(requestOrder.getQty() * requestOrder.getUnitPrice());
 
+        /* send this order to the kafka */
+        //kafkaProducer.send("example-catalog-topic", orderDto);
+        kafkaProducer.send("example-catalog-topic", orderDto);
+        orderProducer.send("orders", orderDto);
+        ResponseOrder responseOrder = modelMapper.map(orderDto, ResponseOrder.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/orders")
     public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable("userId") String userId){
         Iterable<OrderEntity> orderEntities = orderService.getOrdersByUserID(userId);
 

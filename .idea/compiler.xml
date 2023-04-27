@@ -19,7 +19,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api-gateway-service" target="11" />
-      <module name="catalogs-service" target="17" />
+      <module name="catalogs-service" target="11" />
       <module name="config-service" target="11" />
       <module name="discoveryservice" target="11" />
       <module name="first-service" target="11" />
